@@ -1,3 +1,3 @@
-from entities.company import *
-from entities.student import *
+from students.courses import *
+from students.student import *
 
