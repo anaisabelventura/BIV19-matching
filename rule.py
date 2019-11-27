@@ -3,6 +3,7 @@ from rule_aux import *
 
 
 class Criteria:
+	"""Abstract concept to represent a criteria"""
 	def __init__(self, company, student):
 		self.company = company
 		self.student = student
@@ -36,6 +37,6 @@ class CriteriaStudentWantsCompany(Criteria):
 				and self.student.preferences[self.company.name] >= get_preference_average(self.student.preferences)
 
 
-class CriteriaCompanyHasStudentInTop3(Criteria):
+'''class CriteriaCompanyHasStudentInTop3(Criteria):
 	def validate(self):
-		return self.company.desired_students.contains(self.student)
+		return self.company.desired_students.contains(self.student)'''

@@ -8,7 +8,6 @@ class Company:
         self.desired_cycle = desired_cycle
         self.desired_students = desired_students
 
-
 '''class Package(Enum):
     DIAMOND = (4,)
     GOLD = (3,)
