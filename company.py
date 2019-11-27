@@ -1,5 +1,4 @@
-from enum import Enum
-
+from builtins import property
 
 class Company:
     def __init__(self, name, package, desired_cycle, desired_areas, desired_students):
@@ -10,7 +9,7 @@ class Company:
         self.desired_students = desired_students
 
 
-class Package(Enum):
+'''class Package(Enum):
     DIAMOND = (4,)
     GOLD = (3,)
     SILVER = (2,)
@@ -22,3 +21,4 @@ class Package(Enum):
     @property
     def get_package_student_number(self):
         return self.student_number
+'''

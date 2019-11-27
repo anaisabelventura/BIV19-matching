@@ -1,4 +1,6 @@
-from matching.rule_aux import *
+from builtins import len
+from rule_aux import *
+
 
 class Criteria:
 	def __init__(self, company, student):
@@ -27,11 +29,13 @@ class CriteriaCorrespondingCycle(Criteria):
 class CriteriaStudentWantsCompany(Criteria):
 	def validate(self):
 		"""True if the student wants the company"""
-		return self.student.preferences.contains(self.company) \
-			and self.student.preferences[self.company.name] >= get_preference_average(self.student.preferences)
+		if len(self.student.preferences) <= 5:
+			return self.student.preferences.contains(self.company)
+		else:
+			return self.student.preferences.contains(self.company) \
+				and self.student.preferences[self.company.name] >= get_preference_average(self.student.preferences)
 
 
 class CriteriaCompanyHasStudentInTop3(Criteria):
 	def validate(self):
-
 		return self.company.desired_students.contains(self.student)
