@@ -35,8 +35,3 @@ class CriteriaStudentWantsCompany(Criteria):
 		else:
 			return self.student.preferences.contains(self.company) \
 				and self.student.preferences[self.company.name] >= get_preference_average(self.student.preferences)
-
-
-'''class CriteriaCompanyHasStudentInTop3(Criteria):
-	def validate(self):
-		return self.company.desired_students.contains(self.student)'''
