@@ -7,8 +7,10 @@ from student import *
 from pathlib import Path
 import xlrd
 
-file_path = input("Enter the path for the excel file: ")
+file_path = input("Enter the path for the students file: ")
 
+students = []
+companies = []
 
 # Opening file to work with
 wb = xlrd.open_workbook(file_path)
@@ -17,12 +19,11 @@ sheet = wb.sheet_by_index(1)
 i = 1
 
 for row in sheet.get_rows():
-	print(row)
-
+	print(row[1].value)
+	print(row[1])
 
 # This list will contain the object students created during the cycles
-students = []
-companies = []
+
 
 # Main cycle:
 #for i in range(72):  # 72 is the number of enrolled students
