@@ -1,3 +1,4 @@
+
 from areas import *
 from company import *
 from courses import *
@@ -7,27 +8,57 @@ from student import *
 from pathlib import Path
 import xlrd
 
-file_path = input("Enter the path for the students file: ")
-
+#Import Student Data
+file_path_students = input("Enter the path for the students file: ")
+# This list will contain the object students created during the cycles
 students = []
-companies = []
 
 # Opening file to work with
-wb = xlrd.open_workbook(file_path)
+wb = xlrd.open_workbook(file_path_students)
 sheet = wb.sheet_by_index(1)
 
-i = 1
-
+# Creating student profiles
 for row in sheet.get_rows():
-	print(row[1].value)
-	print(row[1])
+	name = row[2].value
+	number = row[4].value
+	degree = row[3].value
+	year = row[5].value
+	preferences = []
 
+	for i in range(8, 28):
+		if row[i].value != 0:
+			# [number of column, how much he wants it]
+			preferences += [i, row[i].value]
+		else:
+			pass
+
+	students.append(Student(name, number, degree, year, preferences))
+
+#Import Company Data
+file_path_students = input("Enter the path for the students file: ")
 # This list will contain the object students created during the cycles
+students = []
 
+# Opening file to work with
+wb = xlrd.open_workbook(file_path_students)
+sheet = wb.sheet_by_index(1)
 
-# Main cycle:
-#for i in range(72):  # 72 is the number of enrolled students
-	#students.append(Student(student_names[i], student_numbers[i], student_degrees[i], student_year[i], "lista ascendente de preferências"))
+# Creating student profiles
+for row in sheet.get_rows():
+	name = row[2].value
+	number = row[4].value
+	degree = row[3].value
+	year = row[5].value
+	preferences = []
+
+	for i in range(8, 28):
+		if row[i].value != 0:
+			# [number of column, how much he wants it]
+			preferences += [i, row[i].value]
+		else:
+			pass
+
+	students.append(Student(name, number, degree, year, preferences))
 
 for company in companies:
 	perfect_students = []
