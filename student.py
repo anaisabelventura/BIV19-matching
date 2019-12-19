@@ -3,7 +3,6 @@ import constants as CONSTANT
 
 class Student:
     def __init__(self, name, number, degree, year, preferences):
-        """ Constructor """
         self.name = name
         self.number = number
         self.degree = degree

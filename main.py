@@ -47,6 +47,21 @@ file_path_companies = input("Enter the path for the companies data file: ")
 
 companies = []
 
+# Opening file to work with
+wb = xlrd.open_workbook(file_path_companies)
+sheet = wb.sheet_by_index(0)
+
+# Converting from generator to list, excluding header row
+rows = list(sheet.get_rows())[1:]
+
+# Creating company profiles
+for row in rows:
+	name = row[1].value
+	package = row[2].value
+	cycles = row[3].value
+
+
+
 for company in companies:
 	perfect_students = []
 	corresponding_area_students = []
