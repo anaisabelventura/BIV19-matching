@@ -1,6 +1,3 @@
-from builtins import property
-
-
 class Company:
     def __init__(self, company_id, name, package, desired_cycle, desired_areas):
         self.company_id = company_id

@@ -8,8 +8,9 @@ from student import *
 from pathlib import Path
 import xlrd
 
-#Import Student Data
-file_path_students = input("Enter the path for the students file: ")
+# import students data
+file_path_students = input("Enter the path for the students data file: ")
+
 # This list will contain the object students created during the cycles
 students = []
 
@@ -17,31 +18,48 @@ students = []
 wb = xlrd.open_workbook(file_path_students)
 sheet = wb.sheet_by_index(1)
 
+# Converting from generator to list, excluding header row
+rows = list(sheet.get_rows())[1:]
+
+# Control variables
+n_companies = 20
+index_start = 8
+index_end = index_start + n_companies
+
 # Creating student profiles
-for row in sheet.get_rows():
+for row in rows:
 	name = row[2].value
 	number = row[4].value
 	degree = row[3].value
-	year = row[5].value
+	year = int(row[5].value)
 	preferences = []
 
-	for i in range(8, 28):
-		if row[i].value != 0:
-			# [number of column, how much he wants it]
-			preferences += [i, row[i].value]
+	for i in range(index_start, index_end):
+		if row[i].value == '':
+			preferences.append(0)
 		else:
-			pass
+			preferences.append(int(row[i].value))
 
 	students.append(Student(name, number, degree, year, preferences))
 
-#Import Company Data
-file_path_students = input("Enter the path for the students file: ")
-# This list will contain the object students created during the cycles
-students = []
+# Importing companies from spreadsheet
+file_path_companies = input("Enter the path for the companies data file: ")
+
+companies = []
 
 # Opening file to work with
-wb = xlrd.open_workbook(file_path_students)
-sheet = wb.sheet_by_index(1)
+wb = xlrd.open_workbook(file_path_companies)
+sheet = wb.sheet_by_index(0)
+
+# Converting from generator to list, excluding header row
+rows = list(sheet.get_rows())[1:]
+
+# Creating company profiles
+for row in rows:
+	name = row[1].value
+	package = row[2].value
+	cycles = row[3].value
+
 
 # Creating student profiles
 for row in sheet.get_rows():
@@ -84,7 +102,6 @@ for company in companies:
 				average_students += student
 		else:
 			pass
-			# dont know what to do
 
 	matching_students = [perfect_students, corresponding_area_students, corresponding_cycle_students, average_students]
 
@@ -99,4 +116,3 @@ for company in companies:
 
 			students.remove(max_student)
 			company.assigned_students += max_student
-
