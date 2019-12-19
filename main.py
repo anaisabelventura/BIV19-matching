@@ -61,6 +61,22 @@ for row in rows:
 	cycles = row[3].value
 
 
+# Creating student profiles
+for row in sheet.get_rows():
+	name = row[2].value
+	number = row[4].value
+	degree = row[3].value
+	year = row[5].value
+	preferences = []
+
+	for i in range(8, 28):
+		if row[i].value != 0:
+			# [number of column, how much he wants it]
+			preferences += [i, row[i].value]
+		else:
+			pass
+
+	students.append(Student(name, number, degree, year, preferences))
 
 for company in companies:
 	perfect_students = []
