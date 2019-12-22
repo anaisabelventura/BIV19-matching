@@ -100,10 +100,19 @@ while len(students) > 0:
 		corresponding_cycle_students = []
 		average_students = []
 
+		'''if company.package.upper() == 'DIAMOND' and len(company.assigned_students) == 4:
+			continue
+		elif company.package.upper() == 'GOLD' and len(company.assigned_students) == 3:
+			continue'''
+		if company.package.upper() == 'SILVER' and len(company.assigned_students) == 2:
+			continue
+		elif company.package.upper() == 'BRASS' and len(company.assigned_students) == 1:
+			continue
+
 		for student in students:
 			rule = CriteriaStudentWantsCompany(company, student)
 			if rule.validate():
-				if company.package == 'DIAMOND' or company.package == 'GOLD':
+				if company.package.upper() == 'DIAMOND' or company.package.upper() == 'GOLD':
 					rule1 = CriteriaCorrespondingArea(company, student)
 					rule2 = CriteriaCorrespondingCycle(company, student)
 
