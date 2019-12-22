@@ -30,7 +30,12 @@ class CriteriaCorrespondingCycle(Criteria):
 class CriteriaStudentWantsCompany(Criteria):
 	def validate(self):
 		"""True if the student wants the company"""
-		if len(self.student.preferences) <= 5:
+		count = 0
+		for val in self.student.preferences:
+			if val != 0:
+				count += 1
+
+		if count <= 5:
 			return self.student.preferences[self.company.company_id] != 0
 		else:
 			return self.student.preferences[self.company.company_id] != 0 \

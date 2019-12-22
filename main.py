@@ -31,11 +31,16 @@ from student import *
 students = []
 
 # Opening file to work with
-wb = xlrd.open_workbook('students.xlsx')
+try:
+	wb = xlrd.open_workbook('students.xlsx')
+except FileNotFoundError:
+	print('Error while loading company file. Make sure it is called \'students.xlsx\'')
+	exit(1)
+
 sheet = wb.sheet_by_index(0)
 
-# Converting from generator to list, excluding header row
-rows = list(sheet.get_rows())[1:]
+# Converting from generator to list
+rows = list(sheet.get_rows())
 
 # Control variables
 n_companies = len(rows[0]) - 5
@@ -61,11 +66,15 @@ for row in rows:
 companies = []
 
 # Opening file to work with
-wb = xlrd.open_workbook('companies.xlsx')
+try:
+	wb = xlrd.open_workbook('companies.xlsx')
+except FileNotFoundError:
+	print('Error while loading company file. Make sure it is called \'companies.xlsx\'')
+
 sheet = wb.sheet_by_index(0)
 
-# Converting from generator to list, excluding header row
-rows = list(sheet.get_rows())[1:]
+# Converting from generator to list
+rows = list(sheet.get_rows())
 
 company_id = 0
 
@@ -82,45 +91,48 @@ for row in rows:
 
 	company_id += 1
 
-for company in companies:
-	perfect_students = []
-	corresponding_area_students = []
-	corresponding_cycle_students = []
-	average_students = []
 
-	for student in students:
-		rule = CriteriaStudentWantsCompany(company, student)
-		if rule.validate():
-			if company.package == 'DIAMOND' or company.package == 'GOLD':
-				rule1 = CriteriaCorrespondingArea(company, student)
-				rule2 = CriteriaCorrespondingCycle(company, student)
+# Actual matching
+while len(students) > 0:
+	for company in companies:
+		perfect_students = []
+		corresponding_area_students = []
+		corresponding_cycle_students = []
+		average_students = []
 
-				if rule1.validate() and rule2.validate():
-					perfect_students.append(student)
-				elif rule1.validate():
-					corresponding_area_students.append(student)
-				elif rule2.validate():
-					corresponding_cycle_students.append(student)
+		for student in students:
+			rule = CriteriaStudentWantsCompany(company, student)
+			if rule.validate():
+				if company.package == 'DIAMOND' or company.package == 'GOLD':
+					rule1 = CriteriaCorrespondingArea(company, student)
+					rule2 = CriteriaCorrespondingCycle(company, student)
+
+					if rule1.validate() and rule2.validate():
+						perfect_students.append(student)
+					elif rule1.validate():
+						corresponding_area_students.append(student)
+					elif rule2.validate():
+						corresponding_cycle_students.append(student)
+					else:
+						average_students.append(student)
 				else:
 					average_students.append(student)
 			else:
-				average_students.append(student)
-		else:
-			pass
+				pass
 
-	matching_students = [perfect_students, corresponding_area_students, corresponding_cycle_students, average_students]
+		matching_students = [perfect_students, corresponding_area_students, corresponding_cycle_students, average_students]
 
-	for lst in matching_students:
-		if len(lst) > 0:
-			max_want = lst[0].preferences[company.company_id]
-			max_student = lst[0]
-			for stdnt in lst:
-				if stdnt.preferences[company.company_id] < max_want:
-					max_want = stdnt.preferences[company.company_id]
-					max_student = stdnt
+		for lst in matching_students:
+			if len(lst) > 0:
+				max_want = lst[0].preferences[company.company_id]
+				max_student = lst[0]
+				for stdnt in lst:
+					if stdnt.preferences[company.company_id] < max_want:
+						max_want = stdnt.preferences[company.company_id]
+						max_student = stdnt
 
-			students.remove(max_student)
-			company.assigned_students.append(max_student)
+				students.remove(max_student)
+				company.assigned_students.append(max_student)
 
 
 f = open('output.txt', 'w')
@@ -128,5 +140,7 @@ for company in companies:
 	f.write(f'{company.name}: ')
 	for student in company.assigned_students:
 		f.write(student.name)
-		f.write(',')
+		f.write(', ')
 	f.write('\n')
+
+
