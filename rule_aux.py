@@ -3,6 +3,6 @@ def get_preference_average(preferences):
 	s = 0
 	for key in preferences:
 		count += 1
-		s += preferences[key]
+		s += key
 
 	return s / count

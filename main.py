@@ -1,35 +1,53 @@
-from company import *
-from courses import *
-from rule import *
-from rule_aux import *
-from student import *
-from pathlib import Path
 import xlrd
 
-# import students data
-file_path_students = input("Enter the path for the students data file: ")
+from company import Company
+from rule import *
+from student import *
+
+'''
+5 - Deloitte
+6 - OLX Group
+7 - Energetus
+8 - JLL/Tetris
+9 - Novabase
+10 - JETsj
+11 - Oak Peak
+12 - Instituto de Soldadura e Qualidade
+13 - Grupo ETE
+14 - Engidro
+15 - Premium Minds
+16 - Skyline Communications
+17 - Grupo de Lasers e Plasma
+18 - Sidul
+19 - Nerd Monkeys
+20 - Life Emotions
+21 - JSJ Structural Engineering
+22 - Introsys
+23 - IBM
+24 - Slefty
+'''
 
 # This list will contain the object students created during the cycles
 students = []
 
 # Opening file to work with
-wb = xlrd.open_workbook(file_path_students)
-sheet = wb.sheet_by_index(1)
+wb = xlrd.open_workbook('students.xlsx')
+sheet = wb.sheet_by_index(0)
 
 # Converting from generator to list, excluding header row
 rows = list(sheet.get_rows())[1:]
 
 # Control variables
-n_companies = 20
-index_start = 8
+n_companies = len(rows[0]) - 5
+index_start = 5
 index_end = index_start + n_companies
 
 # Creating student profiles
 for row in rows:
-	name = row[2].value
-	number = row[4].value
-	degree = row[3].value
-	year = int(row[5].value)
+	name = row[0].value
+	number = row[1].value
+	degree = row[2].value
+	year = int(row[3].value)
 	preferences = []
 
 	for i in range(index_start, index_end):
@@ -40,64 +58,53 @@ for row in rows:
 
 	students.append(Student(name, number, degree, year, preferences))
 
-# Importing companies from spreadsheet
-file_path_companies = input("Enter the path for the companies data file: ")
-
 companies = []
 
 # Opening file to work with
-wb = xlrd.open_workbook(file_path_companies)
+wb = xlrd.open_workbook('companies.xlsx')
 sheet = wb.sheet_by_index(0)
 
 # Converting from generator to list, excluding header row
 rows = list(sheet.get_rows())[1:]
 
+company_id = 0
+
 # Creating company profiles
 for row in rows:
-	name = row[1].value
-	package = row[2].value
-	cycles = row[3].value
+	name = row[0].value
+	package = row[1].value
+	if package == 'Diamond' or package == 'Gold':
+		cycles = row[2].value
+		preferences = row[3].value
+		companies.append(Company(company_id, name, package, cycles, preferences))
+	else:
+		companies.append(Company(company_id, name, package, '', []))
 
-
-# Creating student profiles
-for row in sheet.get_rows():
-	name = row[2].value
-	number = row[4].value
-	degree = row[3].value
-	year = row[5].value
-	preferences = []
-
-	for i in range(8, 28):
-		if row[i].value != 0:
-			# [number of column, how much he wants it]
-			preferences += [i, row[i].value]
-		else:
-			pass
-
-	students.append(Student(name, number, degree, year, preferences))
+	company_id += 1
 
 for company in companies:
 	perfect_students = []
 	corresponding_area_students = []
 	corresponding_cycle_students = []
 	average_students = []
+
 	for student in students:
 		rule = CriteriaStudentWantsCompany(company, student)
 		if rule.validate():
-			if company.package == "DIAMOND" or company.package == "GOLD":
+			if company.package == 'DIAMOND' or company.package == 'GOLD':
 				rule1 = CriteriaCorrespondingArea(company, student)
 				rule2 = CriteriaCorrespondingCycle(company, student)
 
 				if rule1.validate() and rule2.validate():
-					perfect_students += student
+					perfect_students.append(student)
 				elif rule1.validate():
-					corresponding_area_students += student
+					corresponding_area_students.append(student)
 				elif rule2.validate():
-					corresponding_cycle_students += student
+					corresponding_cycle_students.append(student)
 				else:
-					average_students += student
+					average_students.append(student)
 			else:
-				average_students += student
+				average_students.append(student)
 		else:
 			pass
 
@@ -113,4 +120,13 @@ for company in companies:
 					max_student = stdnt
 
 			students.remove(max_student)
-			company.assigned_students += max_student
+			company.assigned_students.append(max_student)
+
+
+f = open('output.txt', 'w')
+for company in companies:
+	f.write(f'{company.name}: ')
+	for student in company.assigned_students:
+		f.write(student.name)
+		f.write(',')
+	f.write('\n')

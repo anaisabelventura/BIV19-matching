@@ -4,6 +4,7 @@ from rule_aux import *
 
 class Criteria:
 	"""Abstract concept to represent a criteria"""
+
 	def __init__(self, company, student):
 		self.company = company
 		self.student = student
@@ -15,9 +16,8 @@ class Criteria:
 class CriteriaCorrespondingArea(Criteria):
 	def validate(self):
 		"""Iterates throught all the areas the company wants. Returns true if student course is in desired area"""
-		for area in self.company.desired_areas:
-			if area.courses.contains(self.student.degree):
-				return True
+		if self.company.desired_courses != [] and self.student.degree in self.company.desired_courses:
+			return True
 		return False
 
 
@@ -31,7 +31,7 @@ class CriteriaStudentWantsCompany(Criteria):
 	def validate(self):
 		"""True if the student wants the company"""
 		if len(self.student.preferences) <= 5:
-			return self.student.preferences.contains(self.company)
+			return self.student.preferences[self.company.company_id] != 0
 		else:
-			return self.student.preferences.contains(self.company) \
-				and self.student.preferences[self.company.name] >= get_preference_average(self.student.preferences)
+			return self.student.preferences[self.company.company_id] != 0 \
+				and self.student.preferences[self.company.company_id] >= get_preference_average(self.student.preferences)
