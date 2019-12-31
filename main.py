@@ -4,29 +4,6 @@ from company import Company
 from rule import *
 from student import *
 
-'''
-5 - Deloitte
-6 - OLX Group
-7 - Energetus
-8 - JLL/Tetris
-9 - Novabase
-10 - JETsj
-11 - Oak Peak
-12 - Instituto de Soldadura e Qualidade
-13 - Grupo ETE
-14 - Engidro
-15 - Premium Minds
-16 - Skyline Communications
-17 - Grupo de Lasers e Plasma
-18 - Sidul
-19 - Nerd Monkeys
-20 - Life Emotions
-21 - JSJ Structural Engineering
-22 - Introsys
-23 - IBM
-24 - Slefty
-'''
-
 # This list will contain the object students created during the cycles
 students = []
 
@@ -91,22 +68,20 @@ for row in rows:
 
 	company_id += 1
 
+iteration_count = 0
 
 # Actual matching
-while len(students) > 0:
+while len(students) > 0 and iteration_count < 100:
 	for company in companies:
 		perfect_students = []
 		corresponding_area_students = []
 		corresponding_cycle_students = []
 		average_students = []
 
-		'''if company.package.upper() == 'DIAMOND' and len(company.assigned_students) == 4:
+		if len(company.assigned_students) == 10:
 			continue
-		elif company.package.upper() == 'GOLD' and len(company.assigned_students) == 3:
-			continue'''
-		if company.package.upper() == 'SILVER' and len(company.assigned_students) == 2:
-			continue
-		elif company.package.upper() == 'BRASS' and len(company.assigned_students) == 1:
+
+		if company.package.upper() == 'BRASS' and len(company.assigned_students) == 1:
 			continue
 
 		for student in students:
@@ -131,6 +106,7 @@ while len(students) > 0:
 
 		matching_students = [perfect_students, corresponding_area_students, corresponding_cycle_students, average_students]
 
+		# Finds the first student that wants the company the most and assigns him to it
 		for lst in matching_students:
 			if len(lst) > 0:
 				max_want = lst[0].preferences[company.company_id]
@@ -142,7 +118,7 @@ while len(students) > 0:
 
 				students.remove(max_student)
 				company.assigned_students.append(max_student)
-
+	iteration_count += 1
 
 f = open('output.txt', 'w')
 for company in companies:
@@ -152,4 +128,9 @@ for company in companies:
 		f.write(', ')
 	f.write('\n')
 
-
+if len(students) != 0:
+	print(f"{len(students)} students could not be matched")
+	for student in students:
+		print("Name: " + student.name)
+else:
+	print("Matching successfull! All students assigned to a company")
